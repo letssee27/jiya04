@@ -187,9 +187,7 @@ document.getElementById("startBtn").addEventListener("click",()=>document.getEle
 
 const msg = `Happy Birthday, Jiya! 🎂🥳💗
 
-Wishing the most wonderful girl a birthday filled with happiness, love, laughter, and countless beautiful memories! ✨💕
-
-May your life always be filled with reasons to smile, people who genuinely care about you, and little moments that make your heart happy. May all your dreams come true, may your hard work bring you success, and may this new year of your life be even more beautiful than the last. 🌸🦋
+Wishing the most wonderful girl a birthday filled with happiness, love, laughter, and countless beautiful memories! ✨💕 May your life always be filled with reasons to smile, people who genuinely care about you, and little moments that make your heart happy.May all your dreams come true, may your hard work bring you success, and may this new year of your life be even more beautiful than the last. 🌸🦋
 
 You deserve all the love, happiness, and magic this world has to offer. May every wish you make today find its way to you, and may your days always be filled with sunshine, smiles, and a little extra sparkle. 💫🎀
 
@@ -1233,15 +1231,43 @@ document.addEventListener("keydown", (e) => {
 
 })();
 
+
 /* =========================
    SECRET CAT EGG 🐱
    ========================= */
 
 const catEgg = document.getElementById("catEgg");
+const catAudio = document.getElementById("catAudio");
+const bgMusic = document.getElementById("bgMusic");
+
+let bgMusicWasPlayingBeforeCat = false;
 
 if (catEgg) {
 
   function catSurprise() {
+
+    /* Play cat audio and manage background music 🎵 */
+
+    if (catAudio) {
+
+      // Remember music state only when starting a new cat audio
+      if (catAudio.paused) {
+        bgMusicWasPlayingBeforeCat =
+          bgMusic && !bgMusic.paused;
+      }
+
+      // Pause background music
+      if (bgMusic) {
+        bgMusic.pause();
+      }
+
+      // Restart cat audio from the beginning
+      catAudio.currentTime = 0;
+
+      catAudio.play().catch((error) => {
+        console.log("Cat audio playback error:", error);
+      });
+    }
 
     /* Bounce the cat */
 
@@ -1260,7 +1286,6 @@ if (catEgg) {
     const message = document.createElement("div");
 
     message.className = "cat-message";
-
     message.textContent = "Meoww..🐱🎂💕";
 
     message.style.left =
@@ -1295,7 +1320,6 @@ if (catEgg) {
 
       document.body.appendChild(heart);
 
-
       heart.animate(
         [
           {
@@ -1325,7 +1349,7 @@ if (catEgg) {
   }
 
 
-  /* Mouse */
+  /* Mouse / Tap */
 
   catEgg.addEventListener("click", catSurprise);
 
@@ -1335,16 +1359,49 @@ if (catEgg) {
   catEgg.addEventListener("keydown", (e) => {
 
     if (e.key === "Enter" || e.key === " ") {
-
       e.preventDefault();
-
       catSurprise();
-
     }
 
   });
 
 }
+
+
+/* =========================
+   RESUME MUSIC AFTER CAT AUDIO 🐱🎵
+   ========================= */
+
+if (catAudio) {
+
+  function resumeMusicAfterCat() {
+
+    if (bgMusicWasPlayingBeforeCat && bgMusic) {
+      bgMusic.play().catch(() => {});
+    }
+
+    bgMusicWasPlayingBeforeCat = false;
+  }
+
+  catAudio.addEventListener(
+    "ended",
+    resumeMusicAfterCat
+  );
+
+  catAudio.addEventListener(
+    "pause",
+    () => {
+      // Don't resume if the cat audio was interrupted
+      // or restarted while it is still intended to play.
+      if (catAudio.ended) {
+        resumeMusicAfterCat();
+      }
+    }
+  );
+
+}
+
+
 
 
 /* =========================
@@ -1406,6 +1463,8 @@ document.addEventListener("click", (e) => {
 
 });
 
+
+
 /* =========================
    CAT VIDEO SURPRISE 🐱🎬
    ========================= */
@@ -1428,3 +1487,131 @@ if (catVideoTrigger) {
   });
 
 }
+
+// Pause background music while either her song plays
+const backgroundMusic = document.getElementById("bgMusic");
+
+const herSongs = document.querySelectorAll(
+  ".song-area audio"
+);
+
+herSongs.forEach((song) => {
+  song.addEventListener("play", () => {
+    backgroundMusic.pause();
+
+    // Pause the other her song if it is playing
+    herSongs.forEach((otherSong) => {
+      if (otherSong !== song) {
+        otherSong.pause();
+      }
+    });
+  });
+
+  song.addEventListener("ended", () => {
+    resumeBackgroundMusic();
+  });
+
+  song.addEventListener("pause", () => {
+    // Resume only when no other her song is playing
+    const anotherSongPlaying = Array.from(herSongs).some(
+      (otherSong) =>
+        otherSong !== song && !otherSong.paused
+    );
+
+    if (!anotherSongPlaying) {
+      resumeBackgroundMusic();
+    }
+  });
+});
+
+function resumeBackgroundMusic() {
+  if (backgroundMusic) {
+    backgroundMusic.play().catch(() => {
+      // Browser may require another user interaction
+    });
+  }
+}
+
+/* =========================
+   FLOATING EGG SURPRISE 🥚😁
+   ========================= */
+
+const floatingEgg = document.getElementById("floatingEgg");
+const eggAudio = document.getElementById("eggAudio");
+const memorySection = document.getElementById("story");
+
+let eggMusicWasPlaying = false;
+let eggAudioActive = false;
+
+// Show the egg when the Memory section appears
+if (floatingEgg && memorySection) {
+  const eggObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        floatingEgg.classList.add("egg-visible");
+      }
+    });
+  }, { threshold: 0.1 });
+
+  eggObserver.observe(memorySection);
+}
+
+function finishEggSurprise() {
+  if (!eggAudioActive) return;
+
+  eggAudioActive = false;
+
+  // Resume music only if it was playing before
+  if (eggMusicWasPlaying && music) {
+    music.play().catch(() => {});
+  }
+
+  eggMusicWasPlaying = false;
+}
+
+function playEggSurprise() {
+  if (!floatingEgg || !eggAudio || eggAudioActive) return;
+
+  eggAudioActive = true;
+
+  // Pause background music
+  eggMusicWasPlaying = !music.paused;
+
+  if (eggMusicWasPlaying) {
+    music.pause();
+  }
+
+  // Show the secret message
+  const rect = floatingEgg.getBoundingClientRect();
+  const message = document.createElement("div");
+
+  message.className = "egg-message";
+  message.textContent = "ehehehe 😁💗";
+  message.style.left = `${rect.left + rect.width / 2}px`;
+  message.style.top = `${rect.top}px`;
+
+  document.body.appendChild(message);
+  setTimeout(() => message.remove(), 1600);
+
+  // Play egg audio
+  eggAudio.currentTime = 0;
+
+  eggAudio.play().catch(() => {
+    finishEggSurprise();
+  });
+}
+
+if (floatingEgg && eggAudio) {
+  floatingEgg.addEventListener("click", playEggSurprise);
+
+  floatingEgg.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      playEggSurprise();
+    }
+  });
+
+  eggAudio.addEventListener("ended", finishEggSurprise);
+  eggAudio.addEventListener("error", finishEggSurprise);
+}
+
