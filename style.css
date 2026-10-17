@@ -1856,3 +1856,79 @@ height: 44px;
     transform: translateY(-7px);
   }
 }
+
+
+/* FLOATING EGG SURPRISE 🥚 */
+
+#floatingEgg {
+  position: fixed;
+  right:85px;
+  top: 88px;
+  z-index: 999;
+  font-size: 28px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  filter: drop-shadow(0 5px 8px #f4a6c755);
+  transition: opacity .8s ease, visibility .8s ease;
+  animation: eggFloat 8s ease-in-out infinite alternate;
+}
+
+#floatingEgg.egg-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+#floatingEgg:active {
+  transform: scale(1.2);
+}
+
+@keyframes eggFloat {
+  0%,100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-3deg);
+  }
+}
+
+.egg-message {
+  position: fixed;
+  z-index: 1001;
+  color: #e84e83;
+  font-size: 12px;
+  font-weight: bold;
+  pointer-events: none;
+  white-space: nowrap;
+  text-shadow: 0 2px 12px #f7bfd5;
+  animation: eggMessagePop 1.5s ease forwards;
+}
+
+@keyframes eggMessagePop {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 0) scale(.5);
+  }
+  25% {
+    opacity: 1;
+    transform: translate(-50%, -25px) scale(1.15);
+  }
+  75% {
+    opacity: 1;
+    transform: translate(-50%, -40px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -65px) scale(.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #floatingEgg {
+    animation: none;
+  }
+}
