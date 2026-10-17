@@ -11,7 +11,7 @@ let started = false;
    ========================= */
 
 envelope.addEventListener("click", () => {
-
+hideFloatingEggNow();
   // Prevent multiple clicks
   if (started) return;
 
@@ -28,9 +28,9 @@ envelope.addEventListener("click", () => {
 
   // Hide the intro after the animation finishes
   setTimeout(() => {
-
+    
     intro.classList.add("hide");
-
+    showFloatingEggAgain();
     document.getElementById("top").scrollIntoView({
       behavior: "smooth"
     });
@@ -187,7 +187,9 @@ document.getElementById("startBtn").addEventListener("click",()=>document.getEle
 
 const msg = `Happy Birthday, Jiya! 🎂🥳💗
 
-Wishing the most wonderful girl a birthday filled with happiness, love, laughter, and countless beautiful memories! ✨💕 May your life always be filled with reasons to smile, people who genuinely care about you, and little moments that make your heart happy.May all your dreams come true, may your hard work bring you success, and may this new year of your life be even more beautiful than the last. 🌸🦋
+Wishing the most wonderful girl a birthday filled with happiness, love, laughter, and countless beautiful memories! ✨💕
+
+May your life be filled with smiles, love, success, and beautiful moments always. 🌸🦋
 
 You deserve all the love, happiness, and magic this world has to offer. May every wish you make today find its way to you, and may your days always be filled with sunshine, smiles, and a little extra sparkle. 💫🎀
 
@@ -915,318 +917,154 @@ mobileLinks.forEach(link => {
 });
 
 
-/* =========================
-   VIDEO MEMORY 01
-========================= */
-
-const birthdayVideoCard =
-  document.getElementById("birthdayVideoCard");
-
-const videoLightbox =
-  document.getElementById("videoLightbox");
-
-const birthdayVideo =
-  document.getElementById("birthdayVideo");
-
-const closeVideo =
-  document.getElementById("closeVideo");
-
-
-/*
-  Remember whether background music
-  was playing before the video opened.
-*/
-
-let bgMusicWasPlayingBeforeVideo = false;
-
-
-/* =========================
-   OPEN VIDEO
-========================= */
-
-if (birthdayVideoCard) {
-
-  birthdayVideoCard.addEventListener("click", async () => {
-
-    /* Remember music state */
-    bgMusicWasPlayingBeforeVideo = !music.paused;
-
-    /* Pause background music */
-    if (!music.paused) {
-      music.pause();
-    }
-
-    /* Open lightbox */
-    videoLightbox.classList.add("open");
-    document.body.style.overflow = "hidden";
-
-    /*
-      Completely reset and reload the video.
-      This is the important part.
-    */
-    birthdayVideo.pause();
-    birthdayVideo.removeAttribute("src");
-    birthdayVideo.load();
-
-    birthdayVideo.src = "birthday-video.mp4";
-    birthdayVideo.load();
-
-    /* Start from beginning */
-    birthdayVideo.currentTime = 0;
-
-    try {
-      await birthdayVideo.play();
-    } catch (error) {
-      console.log("Video playback error:", error);
-    }
-
-  });
-
-}
-
-/* =========================
-   CLOSE VIDEO
-========================= */
-
-function closeBirthdayVideo() {
-
-  birthdayVideo.pause();
-
-  /* Reset playback */
-  birthdayVideo.currentTime = 0;
-
-  /* Close lightbox */
-  videoLightbox.classList.remove("open");
-
-  document.body.style.overflow = "";
-
-  /* Resume music */
-  if (bgMusicWasPlayingBeforeVideo) {
-    music.play().catch(() => {});
-  }
-
-  bgMusicWasPlayingBeforeVideo = false;
-}
-
-/* =========================
-   CLOSE BUTTON
-========================= */
-
-if (closeVideo) {
-
-  closeVideo.addEventListener(
-    "click",
-    closeBirthdayVideo
-  );
-
-}
-
-
-/* =========================
-   CLICK OUTSIDE VIDEO
-========================= */
-
-if (videoLightbox) {
-
-  videoLightbox.addEventListener("click", (e) => {
-
-    if (e.target === videoLightbox) {
-      closeBirthdayVideo();
-    }
-
-  });
-
-}
-
-
-/* =========================
-   VIDEO ENDED
-========================= */
-
-birthdayVideo.addEventListener("ended", () => {
-
-  console.log("VIDEO ENDED");
-
-  closeBirthdayVideo();
-
-});
-
-
-/* =========================
-   ESCAPE KEY
-========================= */
-
-document.addEventListener("keydown", (e) => {
-
-  if (!videoLightbox.classList.contains("open")) {
-    return;
-  }
-
-  if (e.key === "Escape") {
-    closeBirthdayVideo();
-  }
-
-});
-
-/* =========================
-   FOUR BIRTHDAY VIDEOS
-   ========================= */
+/* =========================================
+   ALL VIDEOS — SHARED MUSIC CONTROL
+   ========================================= */
 
 (() => {
+  const videoLightbox = document.getElementById("videoLightbox");
+  const birthdayVideo = document.getElementById("birthdayVideo");
+  const videoClose = document.getElementById("closeVideo");
 
-  const videoButtons =
-    document.querySelectorAll(".video-open-btn");
-
-  const videoLightbox =
-    document.getElementById("videoLightbox");
-
-  const birthdayVideo =
-    document.getElementById("birthdayVideo");
-
-  const videoClose =
-    document.getElementById("videoClose");
-
-  /* Safety check */
-  if (
-    !videoButtons.length ||
-    !videoLightbox ||
-    !birthdayVideo ||
-    !videoClose
-  ) {
+  if (!videoLightbox || !birthdayVideo || !videoClose) {
+    console.warn("Video elements could not be found.");
     return;
   }
 
   let bgWasPlaying = false;
+  let videoIsOpen = false;
+  let openingVideo = false;
 
+  const videoButtons = [
+    ...new Set([
+      ...document.querySelectorAll("#birthdayVideoCard"),
+      ...document.querySelectorAll(".video-open-btn")
+    ])
+  ];
 
-  /* OPEN VIDEO */
+  /* OPEN ANY VIDEO */
 
-  videoButtons.forEach(button => {
+  async function openVideo(file) {
+    if (!file || openingVideo) return;
+    hideFloatingEggNow();
+    openingVideo = true;
 
-    button.addEventListener("click", () => {
+    // Remember whether background music was playing.
+    bgWasPlaying = !music.paused;
 
-      const file = button.getAttribute("data-video");
-
-      if (!file) return;
-
-
-      /* Remember background music state */
-
-      bgWasPlaying =
-        typeof music !== "undefined" &&
-        music &&
-        !music.paused;
-
-
-      /* Pause background music */
-
-      if (bgWasPlaying) {
-        music.pause();
-      }
-
-
-      /* Load video */
-
-      birthdayVideo.src = file;
-
-      birthdayVideo.load();
-
-      videoLightbox.classList.add("open");
-
-      document.body.style.overflow = "hidden";
-
-
-      /* Play video */
-
-      birthdayVideo.play().catch(() => {});
-
-    });
-
-  });
-
-
-  /* RESUME BACKGROUND MUSIC */
-
-  function resumeBackground() {
-
-    if (
-      bgWasPlaying &&
-      typeof music !== "undefined" &&
-      music
-    ) {
-
-      music.play().catch(() => {});
-
+    // Pause background music.
+    if (bgWasPlaying) {
+      music.pause();
     }
 
-    bgWasPlaying = false;
+    // Pause other audio tracks so they don't overlap the video.
+    document.querySelectorAll("audio").forEach(audio => {
+      if (audio !== music && !audio.paused) {
+        audio.pause();
+      }
+    });
 
+    videoIsOpen = true;
+
+    videoLightbox.classList.add("open");
+    document.body.style.overflow = "hidden";
+
+    birthdayVideo.pause();
+    birthdayVideo.removeAttribute("src");
+    birthdayVideo.load();
+
+    birthdayVideo.src = file;
+    birthdayVideo.load();
+
+    try {
+      await birthdayVideo.play();
+    } catch (error) {
+      console.warn("Unable to play video:", error);
+    } finally {
+      openingVideo = false;
+    }
   }
 
+  /* CONNECT ALL VIDEO BUTTONS */
+
+  videoButtons.forEach(button => {
+    button.addEventListener("click", event => {
+      event.preventDefault();
+
+      const file =
+        button.getAttribute("data-video") ||
+        (button.id === "birthdayVideoCard"
+          ? "birthday-video.mp4"
+          : null);
+
+      openVideo(file);
+    });
+  });
 
   /* CLOSE VIDEO */
 
-  function closeVideo() {
+  function closeBirthdayVideo() {
+    if (!videoIsOpen) return;
+
+    videoIsOpen = false;
 
     birthdayVideo.pause();
 
-    birthdayVideo.removeAttribute("src");
+    try {
+      birthdayVideo.currentTime = 0;
+    } catch (_) {}
 
+    birthdayVideo.removeAttribute("src");
     birthdayVideo.load();
 
     videoLightbox.classList.remove("open");
-
     document.body.style.overflow = "";
 
-    resumeBackground();
+    // Resume only if music was playing before the video.
+    const shouldResumeMusic = bgWasPlaying;
+    bgWasPlaying = false;
 
+    // Do not overlap another audio track.
+    const anotherAudioPlaying = [
+      ...document.querySelectorAll("audio")
+    ].some(audio => audio !== music && !audio.paused);
+
+    if (shouldResumeMusic && !anotherAudioPlaying) {
+      music.play().catch(() => {});
+    }
   }
-
-
-  /* VIDEO FINISHED */
-
-  birthdayVideo.addEventListener("ended", () => {
-
-    closeVideo();
-
-  });
-
 
   /* CLOSE BUTTON */
 
-  videoClose.addEventListener("click", () => {
-
-    closeVideo();
-
+  videoClose.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+    closeBirthdayVideo();
+    showFloatingEggAgain();
   });
 
-
-  /* CLICK OUTSIDE */
+  /* CLICK OUTSIDE VIDEO */
 
   videoLightbox.addEventListener("click", event => {
-
     if (event.target === videoLightbox) {
-
-      closeVideo();
-
+      closeBirthdayVideo();
+      showFloatingEggAgain();
     }
-
   });
 
+  /* VIDEO ENDED */
 
-  /* ESCAPE */
+  birthdayVideo.addEventListener("ended", closeBirthdayVideo);
+
+  /* ESCAPE KEY */
 
   document.addEventListener("keydown", event => {
-
-    if (
-      event.key === "Escape" &&
-      videoLightbox.classList.contains("open")
-    ) {
-
-      closeVideo();
-
+    if (event.key === "Escape" && videoIsOpen) {
+     
+      closeBirthdayVideo();
+      showFloatingEggAgain();
+      
     }
-
   });
 
 })();
@@ -1286,7 +1124,7 @@ if (catEgg) {
     const message = document.createElement("div");
 
     message.className = "cat-message";
-    message.textContent = "Meoww..🐱🎂💕";
+    message.textContent = "ne ne ne ne ne ne ne ne ne ne ne ne ne..🐱🎂💕";
 
     message.style.left =
       `${rect.left + rect.width / 2}px`;
@@ -1524,13 +1362,19 @@ herSongs.forEach((song) => {
   });
 });
 
+
 function resumeBackgroundMusic() {
+  const videoLightbox = document.getElementById("videoLightbox");
+
+  if (videoLightbox?.classList.contains("open")) {
+    return;
+  }
+
   if (backgroundMusic) {
-    backgroundMusic.play().catch(() => {
-      // Browser may require another user interaction
-    });
+    backgroundMusic.play().catch(() => {});
   }
 }
+
 
 /* =========================
    FLOATING EGG SURPRISE 🥚😁
@@ -1615,3 +1459,65 @@ if (floatingEgg && eggAudio) {
   eggAudio.addEventListener("error", finishEggSurprise);
 }
 
+
+/* =========================================
+   HIDE FLOATING EGG WHEN OVERLAYS ARE OPEN
+   ========================================= */
+
+(() => {
+  const floatingEgg = document.getElementById("floatingEgg");
+  const introScreen = document.getElementById("introScreen");
+  const videoLightbox = document.getElementById("videoLightbox");
+  const memoryLightbox = document.getElementById("lightbox");
+  const mobileMenu = document.getElementById("mobileMenu");
+
+  if (!floatingEgg) return;
+
+  function updateFloatingEggVisibility() {
+    const introVisible =
+      introScreen && !introScreen.classList.contains("hide");
+
+    const videoOpen =
+      videoLightbox && videoLightbox.classList.contains("open");
+
+    const memoryOpen =
+      memoryLightbox && memoryLightbox.classList.contains("open");
+
+    const menuOpen =
+      mobileMenu && mobileMenu.classList.contains("open");
+
+    const hideEgg =
+      introVisible || videoOpen || memoryOpen || menuOpen;
+
+    floatingEgg.style.visibility = hideEgg ? "hidden" : "visible";
+    floatingEgg.style.pointerEvents = hideEgg ? "none" : "auto";
+  }
+
+  // Watch overlays for opening/closing class changes.
+  [introScreen, videoLightbox, memoryLightbox, mobileMenu]
+    .filter(Boolean)
+    .forEach(element => {
+      new MutationObserver(updateFloatingEggVisibility).observe(
+        element,
+        { attributes: true, attributeFilter: ["class"] }
+      );
+    });
+
+  updateFloatingEggVisibility();
+})();
+
+/* INSTANTLY HIDE FLOATING EGG */
+
+function hideFloatingEggNow() {
+  const egg = document.getElementById("floatingEgg");
+  if (!egg) return;
+
+  egg.style.setProperty("display", "none", "important");
+}
+
+function showFloatingEggAgain() {
+  const egg = document.getElementById("floatingEgg");
+  if (!egg) return;
+
+  egg.style.removeProperty("display");
+}
