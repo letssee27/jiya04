@@ -191,7 +191,7 @@ Wishing the most wonderful girl a birthday filled with happiness, love, laughter
 
 May your life always be filled with reasons to smile, people who genuinely care about you, and little moments that make your heart happy. May all your dreams come true, may your hard work bring you success, and may this new year of your life be even more beautiful than the last. 🌸🦋
 
-Never stop being the amazing person you are. You deserve all the love, happiness, and magic this world has to offer. May every wish you make today find its way to you, and may your days always be filled with sunshine, smiles, and a little extra sparkle. 💫🎀
+You deserve all the love, happiness, and magic this world has to offer. May every wish you make today find its way to you, and may your days always be filled with sunshine, smiles, and a little extra sparkle. 💫🎀
 
 Keep smiling, keep shining, and keep making the world a more beautiful place just by being you. 🩷
 
