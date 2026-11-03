@@ -1521,3 +1521,10 @@ function showFloatingEggAgain() {
 
   egg.style.removeProperty("display");
 }
+
+const videoButtons = [
+  new Set([
+    document.querySelectorAll("#birthdayVideoCard"),
+    document.querySelectorAll(".video-open-btn")
+  ])
+];
