@@ -1528,3 +1528,18 @@ const videoButtons = [
     document.querySelectorAll(".video-open-btn")
   ])
 ];
+
+const burstHeart = document.querySelector(".burst");
+
+if (burstHeart) {
+  burstHeart.style.cursor = "pointer";
+
+  burstHeart.addEventListener("click", () => {
+    const videoButton = document.querySelector("#birthdayVideoCard");
+
+    if (videoButton) {
+      videoButton.setAttribute("data-video", "pig.mp4");
+      videoButton.click();
+    }
+  });
+}
