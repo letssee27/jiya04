@@ -1962,3 +1962,39 @@ height: 44px;
     left: 82px !important;
   }
 }
+
+#heartVideoTrigger {
+  cursor: pointer;
+}
+.video-open-btn[data-video="6.mp4"],
+.video-open-btn[data-video="7.mp4"] {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+}
+.video-open-btn[data-video="6.mp4"],
+.video-open-btn[data-video="7.mp4"] {
+  display: inline-flex;
+  margin: 0;
+}
+
+.video-open-btn[data-video="6.mp4"] {
+  margin-right: 12px;
+}
+
+.extra-videos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.extra-videos .video-open-btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+}
