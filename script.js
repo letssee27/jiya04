@@ -1521,3 +1521,21 @@ function showFloatingEggAgain() {
 
   egg.style.removeProperty("display");
 }
+
+document.getElementById("heartVideoTrigger").addEventListener("click", () => {
+  document.querySelector('.video-open-btn[data-video="hehe.mp4"]').click();
+});
+
+const heartVideoTrigger = document.getElementById("heartVideoTrigger");
+
+if (heartVideoTrigger) {
+  heartVideoTrigger.addEventListener("click", () => {
+    const videoButton = document.querySelector(
+      '.video-open-btn[data-video="hehe.mp4"]'
+    );
+
+    if (videoButton) {
+      videoButton.click();
+    }
+  });
+}
