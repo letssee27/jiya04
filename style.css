@@ -1962,3 +1962,49 @@ height: 44px;
     left: 82px !important;
   }
 }
+
+.video-heart {
+  position: relative;
+  width: 85px;
+  height: 85px;
+
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff9fbd, #e84e83);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+  font-size: 42px;
+
+  cursor: pointer;
+  box-shadow: 0 5px 20px #e84e8355;
+
+  transition: transform .3s ease;
+  animation: heartGlow 1.6s infinite;
+}
+
+.video-heart:hover {
+  transform: scale(1.12);
+}
+
+.heart-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  color: white;
+  font-size: 19px;
+  pointer-events: none;
+}
+
+@keyframes heartGlow {
+  0%, 100% {
+    box-shadow: 0 0 8px #f66d9b66;
+  }
+  50% {
+    box-shadow: 0 0 22px #f66d9b;
+  }
+}
